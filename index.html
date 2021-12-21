@@ -1,0 +1,188 @@
+<html>
+    <head>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+        <!-- https://docs.agora.io/en/Video/start_call_web?platform=Web -->
+        <script src='https://cdn.agora.io/sdk/release/AgoraRTC_N-4.4.0.js'></script>
+
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+        <meta charset="utf-8">
+        <script src="https://unpkg.com/@croquet/croquet"></script>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    </head>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+		html,
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Poppins', sans-serif;
+		}
+
+		h1 {
+			font-family: 'Poppins', sans-serif;
+			font-size: 1.2em;
+			color: #3f556c;
+		}
+
+		#ui {
+			width: 100%;
+			height: 100%;
+		}
+
+		#ui>div {
+			width: 100%;
+			height: 100%;
+			position: absolute;
+		}
+
+
+		/* INFORMATION BANNERS */
+
+		.infoBanner {
+			display: none;
+			align-items: center;
+			justify-items: center;
+			cursor: pointer;
+			z-index: 1;
+		}
+
+		.infoBanner > div {
+			flex: 1;
+			text-align: center;
+			user-select: none;
+		}
+
+		#ui:not(.alone):not(.someoneSharing) > #clickToShareScreen {
+			display: flex;
+		}
+
+		#ui.alone > #waitingForPeers {
+			display: flex;
+		}
+
+		/* SHARING SCREEN */
+
+		#ui:not(.someoneSharing) > #shareScreenContainer {
+			display: none;
+		}
+
+		#screen {
+			width: 100%;
+			height: 100%;
+			background-color: black;
+		}
+
+		#ui:not(.sharingLocalScreen) #controls {
+			display: none;
+		}
+
+		#ui:not(:hover) #controls {
+			display: none;
+		}
+
+		#controls {
+			position: absolute;
+			display: flex;
+			flex-direction: row;
+			z-index: 2;
+			top: 0;
+			right: 0;
+		}
+
+		#ui:not(.hasAudio) #controls #toggleAudio {
+			display: none;
+		}
+
+		#toggleVideo::after {
+			content: "Hide Screen"
+		}
+
+		#ui.mute-video #toggleVideo::after {
+			content: "Show Screen"
+		}
+
+		#toggleAudio::after {
+			content: "Mute Audio"
+		}
+
+		#ui.mute-audio #toggleAudio::after {
+			content: "Unmute Audio"
+		}
+
+		#stopSharingScreen::after {
+			content: "Stop Sharing Screen"
+		}
+
+		#screenProfiles {
+			position: absolute;
+			top: 0;
+			right: 0;
+			z-index: 2;
+			margin: auto;
+			font-size: 18px;
+			padding: 12px;
+			color: white;
+			background-color: #3f556c;
+			border: none;
+			text-transform: uppercase;
+			border-radius: 5px;
+			font-family: 'Poppins', sans-serif;
+		}
+
+		#screenProfiles option {
+			color: white;
+			font-size: 7rpx;
+			line-height: 20px;
+		}
+
+		select:focus>option:hover {
+			background: #000 !important;
+		}
+
+		#ui.someoneSharing #screenProfiles {
+			display: none;
+		}
+
+		option {
+			font-size: 15px;
+			line-height: 30px;
+		}
+
+
+    </style>
+
+    <body>
+        <div id='ui' class='alone'>
+            <select id='screenProfiles'>
+                <option value='480p_1'>480p, 5fps</option>
+                <option value='480p_2'>480p, 30fps</option>
+                <option value='720p_1'>720p, 5fps</option>
+                <option value='720p_2'>720p, 30fps</option>
+                <option value='1080p_1'>1080p, 5fps</option>
+                <option value='1080p_2' selected>1080p, 30fps</option>
+            </select>
+
+			<div id='waitingForPeers' class='infoBanner'>
+				<div><h1>Waiting for peers</h1></div>
+			</div>
+
+            <div id='clickToShareScreen' class='infoBanner'>
+                <div><h1>click to share screen</h1></div>
+            </div>
+
+            <div id='shareScreenContainer'>
+                <div id='controls'>
+                    <button id='toggleVideo'></button>
+                    <button id='toggleAudio'></button>
+                    <button id='stopSharingScreen'></button>
+                </div>
+                <div id='screen'></div>
+            </div>
+        </div>
+    </body>
+
+    <script type="module" src="script.js"></script>
+</html>

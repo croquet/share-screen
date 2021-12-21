@@ -1,0 +1,2 @@
+const agoraId = "<insert your Agora appID here>";
+export default agoraId;
