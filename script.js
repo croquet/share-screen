@@ -4,8 +4,8 @@ import apiKey from "./apiKey.js";
 import agoraId from "./agoraId.js";
 
 class Model extends Croquet.Model {
-    init() {
-        super.init();
+    init(options) {
+        super.init(options);
 
         this.viewIds = [];
         this.sharingViewId = null;
@@ -299,7 +299,7 @@ function joinSession() {
         appId: 'io.croquet.sharescreen',
         apiKey, 
         name: sessionConfiguration.channelName,
-        password: 'dummy-pass',
+        password: Croquet.App.autoPassword(),
         model: Model,
         view: View,
         autoSleep: false,
